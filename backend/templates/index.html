@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Wizard Automation MVP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white vh-100 d-flex align-items-center">
+    <div class="container border border-secondary p-5 rounded shadow-lg text-center" style="max-width: 500px;">
+        <h2 class="mb-4 text-warning">Mago de Wizard 🧙‍♂️</h2>
+        <p class="text-secondary">Sube una o varias capturas de pantalla para actualizar el reporte Excel.</p>
+        
+        <input type="file" id="foto" class="form-control bg-dark text-white border-secondary mb-4" multiple>
+        
+        <button onclick="procesar()" id="btn" class="btn btn-warning w-100 fw-bold">GENERAR / ACTUALIZAR EXCEL</button>
+        
+        <div id="loader" class="mt-4 d-none">
+            <div class="spinner-border text-warning" role="status"></div>
+            <p class="mt-2 text-warning" id="loading-text">La IA está trabajando...<br><small class="text-muted">(Puede tardar unos segundos extra si subes varias fotos)</small></p>
+        </div>
+    </div>
+
+    <script>
+        async function procesar() {
+            // Ahora cogemos la lista completa de archivos, no solo el [0]
+            const inputArchivos = document.getElementById('foto');
+            const files = inputArchivos.files;
+            
+            if(files.length === 0) return alert("Por favor, selecciona al menos una imagen primero.");
+
+            const btn = document.getElementById('btn');
+            const loader = document.getElementById('loader');
+            
+            btn.classList.add('d-none');
+            loader.classList.remove('d-none');
+
+            // Empaquetamos TODOS los archivos seleccionados
+            const fd = new FormData();
+            for(let i = 0; i < files.length; i++) {
+                fd.append('file', files[i]);
+            }
+
+            try {
+                const res = await fetch('/upload', { method: 'POST', body: fd });
+                if(!res.ok) throw new Error("Fallo en el servidor o IA saturada");
+                
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "Reporte_Wizard.xlsx";
+                a.click();
+                
+                // Limpiamos el input para que quede listo para la próxima
+                inputArchivos.value = "";
+                
+            } catch (e) {
+                alert("Error al procesar: " + e.message);
+            } finally {
+                btn.classList.remove('d-none');
+                loader.classList.add('d-none');
+            }
+        }
+    </script>
+</body>
+</html>
