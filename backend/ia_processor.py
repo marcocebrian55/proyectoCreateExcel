@@ -31,23 +31,21 @@ def extraer_datos_imagen(ruta_imagen):
         # Usamos gemini-1.5-flash que es el más estable para cuentas gratuitas
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GOOGLE_API_KEY}"
         
-        prompt = """Analiza la imagen de Wizard. Tu objetivo es extraer los datos de disponibilidad para crear una fila de historial.
-        
-        INSTRUCCIONES PRECISAS:
-        1. Localiza la FECHA (ej: 26APR2026).
-        2. Localiza la fila etiquetada como 'AVAIL'.
-        3. Extrae el valor de 'TOT' y los valores debajo de cada letra (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P).
-        
-        REGLA DE ORO: Responde ÚNICA Y EXCLUSIVAMENTE con un JSON plano. 
-        Usa este formato exacto para que las columnas del Excel coincidan:
-        
-        {
-          "FECHA": "26/04/2026",
-          "A": 0, "B": 0, "C": 0, "D": 4, "E": 0, "F": 0, "G": 0, "H": 0, "I": 0, "J": 3, "K": 0, "L": 0, "M": 0, "N": 9, "O": 0, "P": 0,
-          "DISPONIBLE WZ": 16
-        }
-        
-        Importante: Si una letra no tiene valor o es cero, pon 0. No incluyas texto explicativo."""
+        prompt = """
+    Analiza esta captura de pantalla de un sistema de gestión de flotas (Wizard).
+    
+    1. Busca la fecha en la parte superior derecha (ejemplo: 03MAY2026) y devuélvela en formato DD/MM/YYYY.
+    2. Busca en la esquina superior derecha el campo 'VEH CAT' y extrae la letra que aparece (ejemplo: S, M, E, L).
+    3. Busca la fila que empieza por 'AVAIL'.
+    4. Extrae los valores numéricos para las columnas: TOT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P.
+
+    Responde ÚNICAMENTE con un objeto JSON con este formato exacto:
+    {
+        "FECHA": "DD/MM/YYYY",
+        "CATEGORIA": "Letra",
+        "TOT": 0, "A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0, "H": 0, "I": 0, "J": 0, "K": 0, "L": 0, "M": 0, "N": 0, "O": 0, "P": 0
+    }
+    """
 
         payload = {
             "contents": [{
