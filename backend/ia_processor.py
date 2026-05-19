@@ -61,11 +61,14 @@ Responde ÚNICAMENTE con un objeto JSON con este formato exacto, sin texto adici
                 print(f"❌ Error de Google API ({codigo}): {mensaje}")
 
                 if codigo == 429:
-                    # Extraer tiempo de espera sugerido por la API
                     match_retry = re.search(r'retry in ([\d.]+)s', mensaje)
                     espera = float(match_retry.group(1)) + 2 if match_retry else 30
-                    print(f"⏳ Rate limit alcanzado. Esperando {espera:.0f} segundos...")
+                    print(f"⏳ Rate limit (429). Esperando {espera:.0f} segundos...")
                     time.sleep(espera)
+                    continue
+                if codigo == 503:
+                    print(f"⏳ Servidor saturado (503). Esperando 15 segundos...")
+                    time.sleep(15)
                     continue
                 return None
 
