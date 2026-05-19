@@ -24,7 +24,7 @@ def extraer_datos_imagen(ruta_imagen):
         img.save(buffer, format="JPEG", quality=80)
         img_data = base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={GOOGLE_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={GOOGLE_API_KEY}"
 
         prompt = """
 Analiza esta captura de pantalla de un sistema de gestión de flotas (Wizard).
