@@ -29,7 +29,7 @@ def extraer_datos_imagen(ruta_imagen):
         prompt = """
 Analiza esta captura de pantalla de un sistema de gestión de flotas (Wizard).
 
-1. Busca la fecha en la parte superior derecha. Estará en formato como "19MAY2026". Conviértela a DD/MM/YYYY. IMPORTANTE: la fecha que debes extraer es la que aparece en la línea de encabezado superior (ej: "19MAY2026"), NO la fecha de la fila de datos de la tabla.
+1. Busca la fecha del período de datos. Aparece en la tabla como una línea con fecha y día de la semana, por ejemplo "23MAY2026  SATURDAY" o "20MAY2026  WEDNESDAY". Esa es la fecha que necesitas, NO la fecha del encabezado superior del sistema. Conviértela a formato DD/MM/YYYY.
 2. Busca el campo 'VEH CAT' en la esquina superior derecha. Extrae la letra que aparece (S, M, E, L, etc.). Si el campo está vacío o no tiene letra, usa "ALL".
 3. Busca la fila que empieza por 'AVAIL' en la tabla.
 4. Extrae los valores numéricos de esa fila para las columnas: TOT, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P.
