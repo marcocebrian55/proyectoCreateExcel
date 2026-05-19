@@ -84,7 +84,7 @@ def upload_file():
         wb = load_workbook(excel_path)
         ws = wb.active
         
-        cabecera_fila_1 = ['TOTAL', 'CATEGORIA', 'A', 'B', 'C', 'D', 'E (Autom)', 'F (Kodiaq)', 'G (Civic+A3)', 'H (Berl)', 'I(A4)', 'J (T-ROC)', 'K (cabrio)', 'L(A6)', 'M (jumpy)', 'N (tucson)', 'O (Ber 7pax)', 'P(caddyM)', 'DISPONIBLE WZ']
+        cabecera_fila_1 = ['FECHA', 'CATEGORIA', 'A', 'B', 'C', 'D', 'E (Autom)', 'F (Kodiaq)', 'G (Civic+A3)', 'H (Berl)', 'I(A4)', 'J (T-ROC)', 'K (cabrio)', 'L(A6)', 'M (jumpy)', 'N (tucson)', 'O (Ber 7pax)', 'P(caddyM)', 'DISPONIBLE WZ']
         cabecera_fila_2 = ['', '', 'SA', 'SC', 'SG', 'SJ', 'SK', 'MD', 'MC', 'SM', 'MJ', 'EG', 'LL', 'LP', 'LO', 'MN', 'LJ', 'EE', '']
 
         color_rojo = PatternFill(start_color='E6B8B7', end_color='E6B8B7', fill_type='solid')
