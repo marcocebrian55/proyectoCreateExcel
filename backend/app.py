@@ -43,8 +43,8 @@ def upload_file():
             print(f"⚠️ No se pudieron extraer datos de {file.filename}")
             
         if index < len(archivos) - 1:
-            print("⏳ Esperando 4 segundos antes de la siguiente foto...")
-            time.sleep(4)
+            print("⏳ Esperando 15 segundos antes de la siguiente foto...")
+            time.sleep(15)
     
     if not datos_nuevos_lista:
         return "Error: No se ha podido procesar ninguna imagen.", 500

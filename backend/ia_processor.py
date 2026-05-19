@@ -3,6 +3,7 @@ import json
 import os
 import re
 import io
+import time
 import PIL.Image
 import requests
 
@@ -23,7 +24,6 @@ def extraer_datos_imagen(ruta_imagen):
         img.save(buffer, format="JPEG", quality=80)
         img_data = base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-        print("🌐 2. Enviando a Gemini API...")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GOOGLE_API_KEY}"
 
         prompt = """
@@ -49,11 +49,29 @@ Responde ÚNICAMENTE con un objeto JSON con este formato exacto, sin texto adici
             "generationConfig": {"temperature": 0}
         }
 
-        response = requests.post(url, json=payload, timeout=60)
-        datos_respuesta = response.json()
+        # Reintentar hasta 3 veces si hay rate limit (429)
+        for intento in range(3):
+            print(f"🌐 2. Enviando a Gemini API (intento {intento + 1}/3)...")
+            response = requests.post(url, json=payload, timeout=60)
+            datos_respuesta = response.json()
 
-        if "error" in datos_respuesta:
-            print(f"❌ Error de Google API ({datos_respuesta['error'].get('code', '?')}): {datos_respuesta['error'].get('message', '')}")
+            if "error" in datos_respuesta:
+                codigo = datos_respuesta['error'].get('code', 0)
+                mensaje = datos_respuesta['error'].get('message', '')
+                print(f"❌ Error de Google API ({codigo}): {mensaje}")
+
+                if codigo == 429:
+                    # Extraer tiempo de espera sugerido por la API
+                    match_retry = re.search(r'retry in ([\d.]+)s', mensaje)
+                    espera = float(match_retry.group(1)) + 2 if match_retry else 30
+                    print(f"⏳ Rate limit alcanzado. Esperando {espera:.0f} segundos...")
+                    time.sleep(espera)
+                    continue
+                return None
+
+            break
+        else:
+            print("❌ Se agotaron los reintentos por rate limit.")
             return None
 
         texto_ia = datos_respuesta["candidates"][0]["content"]["parts"][0]["text"]
